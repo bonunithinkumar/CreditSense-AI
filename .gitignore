@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environment
+venv/
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Database
+*.db
+
+# Logs
+*.log
+
+# Build files
+dist/
+build/
+
+# Python cache
+.pytest_cache/
+
+# Model files (optional)
+backend/files/*.pkl
