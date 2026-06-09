@@ -24,3 +24,10 @@ class Predictions(Base):
         DateTime,
         default=datetime.utcnow
     )
+
+class Users(Base):
+    __tablename__ = "Users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True)
+    password = Column(String)
