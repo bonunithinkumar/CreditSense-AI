@@ -33,4 +33,21 @@ build/
 .pytest_cache/
 
 # Model files (optional)
-backend/files/*.pkl
+# backend/files/*.pkl
+
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vite cache
+.vite/

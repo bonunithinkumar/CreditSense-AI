@@ -7,6 +7,8 @@ from models import Input
 from fastapi import FastAPI, Depends
 from database import session, engine
 
+from fastapi.middleware.cors import CORSMiddleware
+
 import database_models
 from database_models import Predictions
 
@@ -18,6 +20,13 @@ from auth import get_current_user
 
 app = FastAPI()
 app.include_router(auth.router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 model = joblib.load("files/credit_risk_model.pkl")
@@ -74,8 +83,7 @@ def predict_defaulter(data: Input, user = user_dependency, db: Session = Depends
         prediction = "Non-Defaulter"
 
     prediction_record = Predictions(
-        user_name="Nithin",
-        user_email="nithin@gmail.com",
+        user_id=user["user_id"],
         prediction=prediction,
         probability=float(probability),
         top_reasons=top3_reasons(shap_dict)
