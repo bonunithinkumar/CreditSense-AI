@@ -7,30 +7,34 @@ import HeroSection from '../components/landing/HeroSection'
 import StatBar from '../components/landing/StatBar'
 import HowItWorks from '../components/landing/HowItWorks'
 import TrustSection from '../components/landing/TrustSection'
+import AIChatSection from '../components/predict/AIChatSection'
+import client from '../api/client'
+import useAuthStore from '../store/authStore'
 
 export default function LandingPage() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const handleAnalyze = (data) => {
+  const handleAnalyze = async (data) => {
+    if (!useAuthStore.getState().user) {
+      window.location.href = '/auth'
+      return
+    }
+
     setLoading(true)
-    setTimeout(() => {
+    try {
+      const response = await client.post('/predict', data)
+      const responseData = response.data
       setResult({
-        probability: 0.72,
-        prediction: 1,
-        shap_values: {
-          debt_ratio: 0.15,
-          revolving_utilization: 0.22,
-          monthly_income: -0.05,
-          age: -0.08,
-          open_credit_lines: 0.03,
-          real_estate_loans: -0.02,
-          dependents: 0.04,
-          delinquency_score: 0.12
-        }
+        ...responseData,
+        shap_values: responseData.SHAP_Values || responseData.shap_values
       })
+    } catch (err) {
+      console.error(err)
+      alert(err.response?.data?.detail || "Prediction failed. Please try again.")
+    } finally {
       setLoading(false)
-    }, 1500)
+    }
   }
 
   return (
@@ -43,7 +47,7 @@ export default function LandingPage() {
 
       <HowItWorks />
 
-      <section className="px-10 py-20 bg-page">
+      <section className="px-10 pb-20 bg-page">
         <div className="max-w-6xl mx-auto w-full">
           <p className="text-[11px] font-medium uppercase tracking-widest text-muted mb-6">
             Risk analyzer
@@ -54,6 +58,8 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {result && <AIChatSection context={result} />}
 
       <TrustSection />
       <Footer />

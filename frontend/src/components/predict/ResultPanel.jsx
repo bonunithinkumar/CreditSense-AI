@@ -1,6 +1,6 @@
 import { ShieldAlert } from 'lucide-react'
 import ShapBars from './ShapBars'
-import AIChatZone from './AIChatZone'
+import AISummary from './AISummary'
 
 export default function ResultPanel({ result, loading }) {
   if (loading) {
@@ -90,7 +90,7 @@ export default function ResultPanel({ result, loading }) {
 
       <ShapBars shap_values={result.shap_values} />
 
-      <AIChatZone context={result} />
+      <AISummary summary={result.summary} />
     </div>
   )
 }

@@ -95,7 +95,7 @@ def predict_defaulter(data: Input, user = user_dependency, db: Session = Depends
     return {
         "prediction": prediction,
         "probability": float(probability),
-        "SHAP Values": shap_dict
+        "SHAP_Values": shap_dict
     }
 
 def top3_reasons(shap_dict):

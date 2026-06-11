@@ -1,6 +1,6 @@
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, JSON, DateTime
+from sqlalchemy import Column, Integer, String, Float, JSON, DateTime, ForeignKey
 from datetime import datetime
 
 Base = declarative_base()
@@ -12,9 +12,8 @@ class Predictions(Base):
 
     id = Column(Integer, primary_key = True, index=True)
 
-    user_name = Column(String)
-    user_email = Column(String)
-
+    user_id = Column(Integer, ForeignKey("Users.id"))
+    
     prediction = Column(String)
     probability = Column(Float)
 

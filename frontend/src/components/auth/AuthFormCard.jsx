@@ -9,6 +9,7 @@ export default function AuthFormCard() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
 
   const login = useAuthStore(state => state.login)
   const navigate = useNavigate()
@@ -17,21 +18,30 @@ export default function AuthFormCard() {
     e.preventDefault()
     setLoading(true)
     setError('')
+    setSuccessMsg('')
 
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/signup'
-      const res = await client.post(endpoint, { email, password })
+      if (isLogin) {
+        const params = new URLSearchParams()
+        params.append('username', email)
+        params.append('password', password)
+        const res = await client.post('/auth/token', params, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        })
 
-      const { access_token } = res.data
-      login(access_token, { email })
-      navigate('/')
+        const { access_token } = res.data
+        login(access_token, { email })
+        navigate('/')
+      } else {
+        await client.post('/auth/', { username: email, password })
+        setIsLogin(true)
+        setSuccessMsg('Account created successfully! Please sign in.')
+      }
     } catch (err) {
       console.error(err)
-      setError('Authentication failed. Please check your credentials.')
-
-      // MOCK LOGIN FOR DEVELOPMENT
-      login('mock_token_123', { email })
-      navigate('/')
+      setError(err.response?.data?.detail || 'Authentication failed. Please check your credentials.')
     } finally {
       setLoading(false)
     }
@@ -99,6 +109,7 @@ export default function AuthFormCard() {
         )}
 
         {error && <p className="text-[11px] text-risk-high mt-2 mb-3 bg-risk-low/20 p-2 rounded">{error}</p>}
+        {successMsg && <p className="text-[11px] text-[#27500A] mt-2 mb-3 bg-[#EAE8E2] p-2 rounded">{successMsg}</p>}
 
         <button
           type="submit"
