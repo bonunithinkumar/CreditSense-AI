@@ -38,9 +38,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-8">
-          <Link to="/" className="text-sm text-muted hover:text-ink transition-colors">Home</Link>
-          <Link to="/" className="text-sm text-muted hover:text-ink transition-colors">About</Link>
-          <Link to="/" className="text-sm text-muted hover:text-ink transition-colors">How it works</Link>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-sm text-muted hover:text-ink transition-colors">Home</button>
+          <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-muted hover:text-ink transition-colors">About</button>
+          <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="text-sm text-muted hover:text-ink transition-colors">How it works</button>
         </div>
 
         <div>

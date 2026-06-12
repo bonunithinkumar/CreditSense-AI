@@ -11,7 +11,10 @@ cryptography
 passlib
 bcrypt==4.0.1
 
+groq
+openai
 
+python-dotenv
 
 joblib
 xgboost

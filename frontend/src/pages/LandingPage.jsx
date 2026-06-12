@@ -25,9 +25,16 @@ export default function LandingPage() {
     try {
       const response = await client.post('/predict', data)
       const responseData = response.data
-      setResult({
+      const initialResult = {
         ...responseData,
         shap_values: responseData.SHAP_Values || responseData.shap_values
+      }
+      setResult(initialResult)
+
+      client.post('/aisummary', { context: responseData }).then(summaryRes => {
+        setResult(prev => ({ ...prev, summary: summaryRes.data.Summary }))
+      }).catch(err => {
+        console.error("Failed to fetch AI summary", err)
       })
     } catch (err) {
       console.error(err)
@@ -45,9 +52,9 @@ export default function LandingPage() {
         <StatBar />
       </div>
 
-      <HowItWorks />
+      <div id="how-it-works"><HowItWorks /></div>
 
-      <section className="px-10 pb-20 bg-page">
+      <section id="predict" className="px-10 pb-20 bg-page">
         <div className="max-w-6xl mx-auto w-full">
           <p className="text-[11px] font-medium uppercase tracking-widest text-muted mb-6">
             Risk analyzer
@@ -61,7 +68,7 @@ export default function LandingPage() {
 
       {result && <AIChatSection context={result} />}
 
-      <TrustSection />
+      <div id="about"><TrustSection /></div>
       <Footer />
     </div>
   )

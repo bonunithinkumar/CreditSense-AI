@@ -3,6 +3,8 @@ import joblib
 import pandas as pd
 
 from models import Input
+from models import ChatRequest
+from models import SummaryRequest
 
 from fastapi import FastAPI, Depends
 from database import session, engine
@@ -17,6 +19,12 @@ from sqlalchemy.orm import Session
 import auth
 from auth import get_current_user
 
+from dotenv import load_dotenv
+load_dotenv()
+
+from openai import OpenAI
+import os
+
 
 app = FastAPI()
 app.include_router(auth.router)
@@ -28,6 +36,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+client = OpenAI(
+    api_key=os.environ.get("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
+)
 
 model = joblib.load("files/credit_risk_model.pkl")
 feature_names = joblib.load("files/feature_names.pkl")
@@ -108,18 +120,84 @@ def top3_reasons(shap_dict):
     )
     return list(top_reasons.keys())
 
-# initially mana daggara sample data unte - danni db lo store cheyyali ante idhi vaduthamu
-"""     
-def init_db():
-    db = session()
+# Ai chat
+@app.post("/chat")
+def chat(data: ChatRequest, user = user_dependency):
+    reply=get_bot_reply(
+        data.question,
+        data.context
+        )
+    return {"reply": reply}
+    
+def get_bot_reply(user_question, context):
+    message = user_question.lower()
 
-    count = db.query(database_models.Product).count
+    system_prompt = f"""
+    You are CredSense AI.
 
-    if count==0:
-        for product in products:
-            db.add(database_models.Product(**product.model_dump()))
+    You are an explainable credit-risk assistant.
 
-        db.commit()
+    Use ONLY the provided prediction context.
 
-init_db()
-"""
+    Prediction: {context["prediction"]}
+    Probability: {context["probability"]}
+
+    SHAP Values:
+    {context["SHAP_Values"]}
+
+    Explain in simple language.
+    Do not provide financial advice.
+    Do not invent facts.
+    Reference the prediction and SHAP values.
+    """
+
+    response = client.responses.create(
+        instructions = system_prompt,
+        input=user_question,
+        model="openai/gpt-oss-20b",
+    )
+
+    return response.output_text
+
+# Get Ai summary 
+@app.post("/aisummary")
+def aisummary(data: SummaryRequest, user = user_dependency):
+    summary = get_summary(data.context)
+    return {"Summary": summary}
+
+def get_summary(context):
+    system_prompt = f"""
+    You are CredSense AI.
+
+    You are an explainable credit-risk assistant.
+
+    Use ONLY the provided prediction context.
+
+    Prediction: {context["prediction"]}
+    Probability: {context["probability"]}
+
+    SHAP Values:
+    {context["SHAP_Values"]}
+
+    Summarize the prediction and SHAP values in simple language.
+    Do not provide financial advice.
+    Do not invent facts.
+    Reference the prediction and SHAP values.
+    Note : just return a simple paragraph overview of their prediction context and provide a simple guidance   
+    """
+
+    response = client.responses.create(
+        instructions = system_prompt,
+        input="summarize the prediction context in simple language and provide a simple guidance",
+        model="openai/gpt-oss-20b",
+    )
+
+    return response.output_text
+
+    
+ 
+
+   
+
+
+

@@ -1,14 +1,17 @@
-import { useState } from 'react'
-import { MessageSquareDot, ArrowUp, Sparkles } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { MessageSquareDot, ArrowUp, Sparkles, Leaf } from 'lucide-react'
 import client from '../../api/client'
 import useAuthStore from '../../store/authStore'
 
 export default function AIChatSection({ context }) {
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
-  const [reply, setReply] = useState(null)
-  const [sentMessage, setSentMessage] = useState(null)
+  const [history, setHistory] = useState([])
   const { user } = useAuthStore()
+
+  useEffect(() => {
+    setHistory([])
+  }, [context])
 
   // Context-aware placeholder based on top SHAP feature
   let topFeatureName = 'this result'
@@ -32,19 +35,20 @@ export default function AIChatSection({ context }) {
       return
     }
 
-    setSentMessage(textToSend)
+    setHistory(prev => [...prev, { role: 'user', content: textToSend }])
     setMessage('')
     setLoading(true)
 
     try {
       const res = await client.post('/chat', {
-        message: textToSend,
-        prediction_context: context
+        question: textToSend,
+        context: context
       })
-      setReply(res.data.reply || res.data.message || "I don't have a specific answer for that.")
+      const replyText = res.data.reply || res.data.message || "I don't have a specific answer for that."
+      setHistory(prev => [...prev, { role: 'assistant', content: replyText }])
     } catch (err) {
       console.error(err)
-      setReply("There was an error connecting to the AI. Please try again.")
+      setHistory(prev => [...prev, { role: 'assistant', content: "There was an error connecting to the AI. Please try again." }])
     } finally {
       setLoading(false)
     }
@@ -82,41 +86,48 @@ export default function AIChatSection({ context }) {
             {/* Initial AI Bubble */}
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-[#EAE8E2] flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-[#27500A]" />
+                <Leaf className="text-brand-accent w-4 h-4" />
               </div>
               <div className="bg-[#F8F7F3] border border-border rounded-xl rounded-tl-none p-4 text-[13px] text-ink leading-relaxed max-w-[85%]">
                 {initialMessage}
               </div>
             </div>
 
-            {/* User Message */}
-            {sentMessage && (
-              <div className="flex gap-4 items-start justify-end">
-                <div className="bg-[#27500A] text-white rounded-xl rounded-tr-none p-4 text-[13px] leading-relaxed max-w-[85%]">
-                  {sentMessage}
+            {/* Chat History */}
+            {history.map((msg, index) => (
+              msg.role === 'user' ? (
+                <div key={index} className="flex gap-4 items-start justify-end">
+                  <div className="bg-[#27500A] text-white rounded-xl rounded-tr-none p-4 text-[13px] leading-relaxed max-w-[85%]">
+                    {msg.content}
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-[#27500A] text-white flex items-center justify-center shrink-0 text-xs font-medium">
+                    {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
+                  </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-[#27500A] text-white flex items-center justify-center shrink-0 text-xs font-medium">
-                  {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
+              ) : (
+                <div key={index} className="flex gap-4 items-start">
+                  <div className="w-8 h-8 rounded-full bg-[#EAE8E2] flex items-center justify-center shrink-0">
+                    <Leaf className="text-brand-accent w-4 h-4" />
+                  </div>
+                  <div className="bg-[#F8F7F3] border border-border rounded-xl rounded-tl-none p-4 text-[13px] text-ink leading-relaxed max-w-[85%]">
+                    {msg.content}
+                  </div>
                 </div>
-              </div>
-            )}
+              )
+            ))}
 
-            {/* AI Reply */}
-            {(reply || loading) && (
+            {/* Loading Indicator */}
+            {loading && (
               <div className="flex gap-4 items-start">
                 <div className="w-8 h-8 rounded-full bg-[#EAE8E2] flex items-center justify-center shrink-0">
-                  <Sparkles className="w-4 h-4 text-[#27500A]" />
+                  <Leaf className="text-brand-accent w-4 h-4" />
                 </div>
                 <div className="bg-[#F8F7F3] border border-border rounded-xl rounded-tl-none p-4 text-[13px] text-ink leading-relaxed max-w-[85%]">
-                  {loading ? (
-                    <div className="flex gap-1">
-                      <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce"></div>
-                      <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                  ) : (
-                    reply
-                  )}
+                  <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce"></div>
+                    <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
                 </div>
               </div>
             )}

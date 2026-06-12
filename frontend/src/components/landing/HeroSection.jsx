@@ -20,10 +20,16 @@ export default function HeroSection() {
           </p>
 
           <div className="flex items-center gap-4 mt-6 lg:mt-10">
-            <button className="bg-brand-accent text-[#173404] font-medium text-sm px-6 py-3 rounded-lg hover:bg-brand-soft transition-colors">
+            <button 
+              onClick={() => document.getElementById('predict')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-brand-accent text-[#173404] font-medium text-sm px-6 py-3 rounded-lg hover:bg-brand-soft transition-colors"
+            >
               Start analyzing
             </button>
-            <button className="border border-brand-base/25 text-brand-base/80 text-sm px-6 py-3 rounded-lg hover:bg-brand-base/10 transition-colors">
+            <button 
+              onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+              className="border border-brand-base/25 text-brand-base/80 text-sm px-6 py-3 rounded-lg hover:bg-brand-base/10 transition-colors"
+            >
               View documentation
             </button>
           </div>

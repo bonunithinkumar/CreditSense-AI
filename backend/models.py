@@ -18,3 +18,10 @@ class User(BaseModel):
     id: int
     name: str
     email: str
+
+class ChatRequest(BaseModel):
+    question: str
+    context: dict
+
+class SummaryRequest(BaseModel):
+    context: dict
