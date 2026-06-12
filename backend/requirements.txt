@@ -20,3 +20,5 @@ joblib
 xgboost
 pandas
 shap
+python-multipart
+scikit-learn
