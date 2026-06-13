@@ -3,14 +3,14 @@ import { Check } from 'lucide-react'
 export default function HeroSection() {
   return (
     <section className="bg-brand px-10 flex-1 flex flex-col justify-center overflow-hidden relative">
-      
+
       {/* Dot Grid Pattern - Right Half */}
-      <div 
-        className="absolute inset-y-0 right-0 w-1/2 pointer-events-none opacity-[0.15]" 
-        style={{ 
-          backgroundImage: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 1px, transparent 1px)', 
-          backgroundSize: '32px 32px' 
-        }} 
+      <div
+        className="absolute inset-y-0 right-0 w-1/2 pointer-events-none opacity-[0.15]"
+        style={{
+          backgroundImage: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 1px, transparent 1px)',
+          backgroundSize: '32px 32px'
+        }}
       />
 
       <div className="max-w-6xl mx-auto w-full py-6 lg:py-12 relative z-10">
@@ -30,13 +30,13 @@ export default function HeroSection() {
           </p>
 
           <div className="flex items-center gap-4 mt-6 lg:mt-10">
-            <button 
+            <button
               onClick={() => document.getElementById('predict')?.scrollIntoView({ behavior: 'smooth' })}
               className="bg-brand-accent text-[#173404] font-medium text-sm px-6 py-3 rounded-lg hover:bg-brand-soft transition-colors"
             >
               Start analyzing
             </button>
-            <button 
+            <button
               onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
               className="border border-brand-base/25 text-brand-base/80 text-sm px-6 py-3 rounded-lg hover:bg-brand-base/10 transition-colors"
             >
@@ -47,15 +47,11 @@ export default function HeroSection() {
           <div className="flex gap-6 text-[11px] text-brand-base/40 mt-6 lg:mt-10">
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4" />
-              <span>Bank-grade security</span>
+              <span>Explainable AI insights</span>
             </div>
             <div className="flex items-center gap-2">
               <Check className="w-4 h-4" />
-              <span>Real-time SHAP analysis</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="w-4 h-4" />
-              <span>FastAPI backend</span>
+              <span>Feature-level explanations</span>
             </div>
           </div>
         </div>
