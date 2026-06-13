@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: credit_scorer_db
+    environment:
+      POSTGRES_USER: bonukirankumar
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: credit_scorer_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bonukirankumar -d credit_scorer_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: credit_scorer_backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Use the db service name to connect inside the docker network
+      - DATABASE_URL=postgresql://bonukirankumar:password@db:5432/credit_scorer_db
+      # Mount other env variables natively from the backend folder
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # VITE_API_URL is embedded at build time. Since users will access the site from their browser,
+        # it should point to localhost:8000
+        - VITE_API_URL=http://localhost:8000
+    container_name: credit_scorer_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

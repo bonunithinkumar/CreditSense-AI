@@ -17,11 +17,14 @@ router = APIRouter(
     tags=["auth"]
 )
 
-# python -c "import secrets; print(secrets.token_hex(32))"   -> to get your own secret key
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-secret_key = "706121320e98d3db114ce82d5cceb173e613c875a0f852289a67c4e66aa3a7a6"  
-algorithm = "HS256"
+secret_key = os.environ.get("SECRET_KEY")
+algorithm = os.environ.get("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -67,7 +70,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
         )
-    token = create_access_token(user.username, user.id,timedelta(minutes=60))
+    token = create_access_token(user.username, user.id,timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES)))
 
     return {"access_token": token, "token_type": "bearer"}
 
