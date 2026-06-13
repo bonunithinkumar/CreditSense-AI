@@ -2,8 +2,18 @@ import { Check } from 'lucide-react'
 
 export default function HeroSection() {
   return (
-    <section className="bg-brand px-10 flex-1 flex flex-col justify-center overflow-hidden">
-      <div className="max-w-6xl mx-auto w-full py-6 lg:py-12">
+    <section className="bg-brand px-10 flex-1 flex flex-col justify-center overflow-hidden relative">
+      
+      {/* Dot Grid Pattern - Right Half */}
+      <div 
+        className="absolute inset-y-0 right-0 w-1/2 pointer-events-none opacity-[0.15]" 
+        style={{ 
+          backgroundImage: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.6) 1px, transparent 1px)', 
+          backgroundSize: '32px 32px' 
+        }} 
+      />
+
+      <div className="max-w-6xl mx-auto w-full py-6 lg:py-12 relative z-10">
         <div className="max-w-3xl">
           <p className="text-[11px] font-medium uppercase tracking-widest text-brand-accent mb-4 lg:mb-6">
             Explainable AI · Credit Intelligence
