@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { MessageSquareDot, ArrowUp, Sparkles, Leaf } from 'lucide-react'
 import client from '../../api/client'
 import useAuthStore from '../../store/authStore'
 
 export default function AIChatSection({ context }) {
+  const navigate = useNavigate()
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState([])
@@ -31,7 +33,7 @@ export default function AIChatSection({ context }) {
     if (!textToSend.trim()) return
 
     if (!user) {
-      window.location.href = '/auth'
+      navigate('/auth')
       return
     }
 

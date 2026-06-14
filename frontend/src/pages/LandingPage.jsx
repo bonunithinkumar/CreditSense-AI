@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import Footer from '../components/layout/Footer'
 import PredictForm from '../components/predict/PredictForm'
@@ -12,12 +13,13 @@ import client from '../api/client'
 import useAuthStore from '../store/authStore'
 
 export default function LandingPage() {
+  const navigate = useNavigate()
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const handleAnalyze = async (data) => {
     if (!useAuthStore.getState().user) {
-      window.location.href = '/auth'
+      navigate('/auth')
       return
     }
 
