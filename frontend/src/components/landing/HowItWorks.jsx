@@ -23,13 +23,13 @@ export default function HowItWorks() {
   ]
 
   return (
-    <section className="bg-[#F0EDE5] border-b border-border px-10 py-20">
+    <section className="bg-[#F0EDE5] border-b border-border px-4 md:px-10 py-12 md:py-20">
       <div className="max-w-6xl mx-auto w-full">
         <div className="mb-12">
           <p className="text-[11px] uppercase tracking-widest text-muted font-medium mb-3">
             Process
           </p>
-          <h2 className="font-serif text-3xl text-ink tracking-tight mb-2">
+          <h2 className="font-serif text-2xl md:text-3xl text-ink tracking-tight mb-2">
             How it works
           </h2>
           <p className="text-sm text-muted leading-relaxed max-w-md">
@@ -37,7 +37,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-4 gap-px bg-border border border-border rounded-xl overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border border border-border rounded-xl overflow-hidden">
           {steps.map((step) => (
             <div key={step.num} className="bg-surface p-6">
               <div className="font-serif text-3xl text-brand-soft">

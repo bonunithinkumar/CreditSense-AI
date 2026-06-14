@@ -59,7 +59,7 @@ export default function AIChatSection({ context }) {
   }
 
   return (
-    <section className="px-10 pb-20 bg-page">
+    <section className="px-4 sm:px-10 pb-12 md:pb-20 bg-page">
       <div className="max-w-6xl mx-auto w-full">
         <p className="text-[10px] font-medium uppercase tracking-widest text-muted mb-4">
           Context-Aware AI Assistant

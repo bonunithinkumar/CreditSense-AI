@@ -5,7 +5,7 @@ import AISummary from './AISummary'
 export default function ResultPanel({ result, loading }) {
   if (loading) {
     return (
-      <div className="bg-surface border border-border rounded-xl overflow-hidden sticky top-4 w-72 h-64 flex flex-col items-center justify-center p-8">
+      <div className="bg-surface border border-border rounded-xl overflow-hidden lg:sticky lg:top-4 w-full lg:w-72 h-64 flex flex-col items-center justify-center p-8">
         <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="text-sm text-muted">Analyzing profile...</p>
       </div>
@@ -14,7 +14,7 @@ export default function ResultPanel({ result, loading }) {
 
   if (!result) {
     return (
-      <div className="bg-surface border border-dashed border-border rounded-xl p-8 sticky top-4 w-72 flex flex-col items-center justify-center text-center h-[400px]">
+      <div className="bg-surface border border-dashed border-border rounded-xl p-8 lg:sticky lg:top-4 w-full lg:w-72 flex flex-col items-center justify-center text-center h-[400px]">
         <ShieldAlert className="w-8 h-8 text-muted/50 mb-3" />
         <p className="text-sm text-muted">Fill in the profile and click analyze to see the result</p>
       </div>
@@ -62,7 +62,7 @@ export default function ResultPanel({ result, loading }) {
   }
 
   return (
-    <div className="bg-surface border border-border rounded-xl overflow-hidden sticky top-4 w-72">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden lg:sticky lg:top-4 w-full lg:w-72">
       <div className={`${riskScheme.bg} border-b ${riskScheme.border} p-5`}>
         <div className={`inline-flex items-center gap-1 ${riskScheme.badgeBg} ${riskScheme.badgeText} text-[10px] font-medium uppercase tracking-wide px-2.5 py-0.5 rounded-full border ${riskScheme.border}`}>
           {riskScheme.verdict}

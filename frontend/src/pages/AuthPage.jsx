@@ -17,13 +17,13 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-page">
-      <nav className="bg-surface border-b border-border h-[72px] px-10 flex items-center shrink-0">
+      <nav className="bg-surface border-b border-border h-[72px] px-4 md:px-10 flex items-center shrink-0">
         <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-brand flex items-center justify-center rounded-lg">
               <Leaf className="text-brand-accent w-4 h-4" />
             </div>
-            <span className="font-medium text-brand-primary text-lg tracking-tight">
+            <span className="font-medium text-brand-primary text-base md:text-lg tracking-tight">
               Cred<span className="text-brand-accent">Sense</span>
             </span>
           </div>
@@ -33,12 +33,12 @@ export default function AuthPage() {
         </div>
       </nav>
 
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-10">
         <div className="max-w-[960px] w-full flex bg-surface border border-border rounded-2xl shadow-sm overflow-hidden min-h-[560px]">
           <div className="hidden md:flex flex-1">
             <AuthLeftPanel />
           </div>
-          <div className="w-full md:w-[420px] p-10 flex items-center justify-center bg-surface border-l border-border">
+          <div className="w-full md:w-[420px] p-6 sm:p-10 flex items-center justify-center bg-surface md:border-l border-border">
             <AuthFormCard />
           </div>
         </div>

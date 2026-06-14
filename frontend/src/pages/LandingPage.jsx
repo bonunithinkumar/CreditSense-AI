@@ -46,7 +46,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-page flex flex-col font-sans">
-      <div className="h-screen flex flex-col">
+      <div className="min-h-screen lg:h-screen flex flex-col">
         <Navbar />
         <HeroSection />
         <StatBar />
@@ -54,12 +54,12 @@ export default function LandingPage() {
 
       <div id="how-it-works"><HowItWorks /></div>
 
-      <section id="predict" className="px-10 pb-20 bg-page">
+      <section id="predict" className="px-4 sm:px-10 py-12 md:py-20 bg-page">
         <div className="max-w-6xl mx-auto w-full">
           <p className="text-[11px] font-medium uppercase tracking-widest text-muted mb-6">
             Risk analyzer
           </p>
-          <div className="flex gap-10 items-start">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
             <PredictForm onSubmit={handleAnalyze} loading={loading} />
             <ResultPanel result={result} loading={loading} />
           </div>

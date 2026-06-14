@@ -64,7 +64,7 @@ function FieldWithPopover({ label, name, value, onChange, placeholder, desc, typ
       <span className="text-[10px] text-muted/70">{desc}</span>
 
       {isOpen && (
-        <div className="absolute left-0 top-[58px] w-64 p-4 bg-surface border border-border shadow-md rounded-xl z-50">
+        <div className="absolute left-0 top-[58px] w-64 max-w-[calc(100vw-3rem)] p-4 bg-surface border border-border shadow-md rounded-xl z-50">
           <p className="text-[11px] text-ink leading-relaxed mb-4">{content.expl}</p>
           <div className="flex flex-col gap-2.5">
             <div>
@@ -191,7 +191,7 @@ export default function PredictForm({ onSubmit, loading }) {
           <input type="number" name="dependents" required value={formData.dependents} onChange={handleChange} placeholder="e.g. 2" className="bg-page border border-border rounded-lg px-3 py-2 text-sm text-ink focus:outline-none focus:border-brand-primary focus:bg-surface transition-colors" />
           <span className="text-[10px] text-muted/70">Financial dependents</span>
         </div>
-        <div className="col-span-2 flex flex-col gap-2 mt-2 pt-3 border-t border-border">
+        <div className="col-span-1 sm:col-span-2 flex flex-col gap-2 mt-2 pt-3 border-t border-border">
           <div className="flex flex-col mb-1">
             <span className="text-[11px] font-medium text-ink tracking-wide">Late Payment History</span>
             <span className="text-[10px] text-muted">Number of times payments were late</span>
