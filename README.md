@@ -1,60 +1,76 @@
 # CredSense AI 🍃
 
-Not just a score. An **explanation** you can trust.
+An explainable credit risk assessment platform powered by XGBoost, SHAP values, and an interactive LLM narration layer.
 
-## 📌 Problem Statement
-Traditional credit scoring models often act as "black boxes," providing borrowers with a single numerical score without explaining the underlying reasons for their credit risk assessment. This lack of transparency leads to confusion, frustration, and a lack of actionable feedback, leaving people unsure of how they can improve their financial standing.
+Live Demo : https://credsense-ai.vercel.app
 
-## 💡 The Solution
-**CredSense AI** bridges the gap between complex machine learning and financial literacy. We provide deep insights into the factors driving every credit decision. 
+---
 
-Powered by advanced **XGBoost** and **SHAP (SHapley Additive exPlanations)** values, our platform ensures complete transparency for modern lending by breaking down exactly *why* a decision was made. Additionally, our integrated, context-aware AI Assistant helps everyday users understand their risk results in simple, jargon-free language and provides actionable guidance to improve their financial health.
+## 🚀 Key Features
+
+* **Interactive Risk Analyzer**: Input borrower financial profiles to receive real-time default risk predictions.
+* **SHAP Explainability**: Breaks down the contribution of each financial metric, making predictions transparent.
+* **AI Copilot**: An interactive, context-aware LLM assistant that translates technical parameters into jargon-free financial guidance.
+* **Responsive Design**: Fully optimized for mobile and desktop viewports.
 
 ---
 
 ## 🛠️ Tech Stack
-- **Frontend:** React, Vite, Tailwind CSS, Zustand
-- **Backend:** FastAPI, Python, SQLAlchemy, JWT Authentication
-- **Machine Learning:** XGBoost, SHAP
-- **AI Integration:** LLM-powered conversational agent and dynamic summarization
+
+* **Frontend**: React (Vite), Tailwind CSS
+* **Backend**: FastAPI, PostgreSQL
+* **ML & AI**: XGBoost Classifier, SHAP (SHapley Additive exPlanations), Groq API / LLMs
 
 ---
 
-## 🚀 Getting Started
+## ⚡ Quick Start with Docker
 
-Follow these simple steps to clone the repository and run CredSense AI locally.
+The easiest way to run the database, backend, and frontend together is using Docker:
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-username/Credit-scorer.git
-cd Credit-scorer
+1. Clone the repository.
+2. Create a `.env` file in the `backend/` folder (see [Configuration](#-configuration) below).
+3. Run the services:
+   ```bash
+   docker compose up --build
+   ```
+4. Open your browser to `http://localhost`.
+
+---
+
+## 🔧 Configuration
+
+Create a `.env` file inside the `backend/` directory:
+```env
+DATABASE_URL=postgresql://bonukirankumar:password@db:5432/credit_scorer_db
+SECRET_KEY=your_jwt_secret_key_here
+GROQ_API_KEY=your_groq_api_key_here
 ```
 
-### 2. Backend Setup
-Navigate to the backend directory, install the required Python packages, and start the FastAPI server:
+---
+
+## 💻 Local Development Setup
+
+If you prefer to run the components manually:
+
+### 1. Backend Setup
 ```bash
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 pip install -r requirements.txt
-```
-*Note: Make sure to create a `.env` file in the `backend` directory with your environment variables (e.g., `DATABASE_URL`, API Keys, and JWT Secret Key).*
-
-Run the backend server:
-```bash
 uvicorn main:app --reload
 ```
-The backend API will be available at `http://localhost:8000`.
+*The API will be available at `http://localhost:8000`.*
 
-### 3. Frontend Setup
-Open a new terminal window, navigate to the frontend directory, install the dependencies, and start the development server:
+### 2. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-The frontend application will be available at `http://localhost:5173` (or the port specified by Vite).
+*The app will be available at `http://localhost:5173`.*
 
 ---
 
 Built with ❤️ by Nithin
+
