@@ -19,12 +19,16 @@ router = APIRouter(
 
 import os
 from dotenv import load_dotenv
+import uuid
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 load_dotenv()
 
 secret_key = os.environ.get("SECRET_KEY")
 algorithm = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES")
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -33,6 +37,9 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 class CreateUserRequest(BaseModel):
     username: str
     password: str
+
+class GoogleTokenRequest(BaseModel):
+    token: str
 
 class Token(BaseModel):
     access_token: str
@@ -73,6 +80,58 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     token = create_access_token(user.username, user.id,timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES)))
 
     return {"access_token": token, "token_type": "bearer"}
+
+@router.post("/google", response_model=Token)
+async def google_auth(request: GoogleTokenRequest, db: db_dependency):
+    try:
+        import requests
+        
+        # Verify the access token by fetching user info
+        response = requests.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            headers={"Authorization": f"Bearer {request.token}"}
+        )
+        
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid Google token",
+            )
+            
+        user_info = response.json()
+        email = user_info.get("email")
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Google token does not contain email")
+
+        # Check if user exists
+        user = db.query(Users).filter(Users.username == email).first()
+
+        if not user:
+            # Create a new user with a random dummy password
+            dummy_password = str(uuid.uuid4())
+            user = Users(
+                username=email,
+                password=bcrypt_context.hash(dummy_password)
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        # Create JWT token
+        token = create_access_token(
+            user.username, 
+            user.id, 
+            timedelta(minutes=int(ACCESS_TOKEN_EXPIRE_MINUTES))
+        )
+
+        return {"access_token": token, "token_type": "bearer"}
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Google authentication failed: {str(e)}",
+        )
 
 
 

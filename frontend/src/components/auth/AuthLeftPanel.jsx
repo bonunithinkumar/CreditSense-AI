@@ -25,7 +25,7 @@ export default function AuthLeftPanel() {
         <p className="text-[10px] font-medium uppercase tracking-widest text-brand-accent mb-6">
           Trusted credit intelligence
         </p>
-        <h1 className="font-serif text-[32px] text-brand-base leading-snug">
+        <h1 className="font-sans font-semibold text-[28px] text-brand-base leading-snug">
           Understand the why behind<br />every credit decision.
         </h1>
         <p className="text-[13px] text-brand-base/60 leading-relaxed max-w-[280px] mt-4">

@@ -19,7 +19,7 @@ export default function StatBar() {
       <div className="max-w-6xl mx-auto w-full grid grid-cols-2 md:flex gap-x-4 gap-y-3 md:gap-x-0 md:gap-y-0 py-4 md:py-0">
         {stats.map((stat, i) => (
           <div key={i} className="py-2 md:py-6 md:pr-8 md:mr-8 md:border-r border-border last:border-0 md:last:border-r-0 flex-1">
-            <div className="font-serif text-2xl md:text-[28px] text-brand tracking-tight">
+            <div className="font-serif text-2xl md:text-[28px] text-ink tracking-tight">
               {stat.value}
             </div>
             <div className="text-[10px] md:text-xs text-muted mt-0.5 md:mt-1">

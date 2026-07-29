@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuthStore from '../../store/authStore'
 import client from '../../api/client'
+import { useGoogleLogin } from '@react-oauth/google'
 
 export default function AuthFormCard() {
   const [isLogin, setIsLogin] = useState(true)
@@ -47,13 +48,35 @@ export default function AuthFormCard() {
     }
   }
 
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        setLoading(true)
+        setError('')
+        const res = await client.post('/auth/google', { token: tokenResponse.access_token })
+        const { access_token } = res.data
+        const payload = JSON.parse(atob(access_token.split('.')[1]))
+        login(access_token, { email: payload.sub })
+        navigate('/')
+      } catch (err) {
+        console.error(err)
+        setError(err.response?.data?.detail || 'Google Authentication failed.')
+      } finally {
+        setLoading(false)
+      }
+    },
+    onError: () => {
+      setError('Google Sign-In failed.')
+    }
+  })
+
   return (
     <div className="w-full max-w-[340px]">
       <div className="mb-8">
         <p className="text-[10px] uppercase tracking-widest text-muted mb-1.5 font-medium">
           {isLogin ? 'Welcome back' : 'Get started'}
         </p>
-        <h2 className="font-serif text-[28px] text-ink mb-2 leading-tight">
+        <h2 className="font-sans font-semibold text-[26px] text-ink mb-2 leading-tight">
           {isLogin ? 'Sign in to account' : 'Create account'}
         </h2>
         <p className="text-[13px] text-muted leading-relaxed">
@@ -61,7 +84,7 @@ export default function AuthFormCard() {
         </p>
       </div>
 
-      <button className="w-full bg-page border border-border rounded-xl h-[44px] flex items-center justify-center gap-2 text-[13px] font-medium text-ink mb-6 hover:bg-border/50 transition-colors">
+      <button onClick={() => handleGoogleLogin()} className="w-full bg-page border border-border rounded-xl h-[44px] flex items-center justify-center gap-2 text-[13px] font-medium text-ink mb-6 hover:bg-border/50 transition-colors">
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />

@@ -44,7 +44,7 @@ export default function Navbar() {
           <div className="w-8 h-8 bg-brand flex items-center justify-center rounded-lg">
             <Leaf className="text-brand-accent w-4 h-4" />
           </div>
-          <span className="font-medium text-brand-primary text-lg tracking-tight">
+          <span className="font-bold text-brand-primary text-lg tracking-tight">
             Cred<span className="text-brand-accent">Sense</span>
           </span>
         </div>

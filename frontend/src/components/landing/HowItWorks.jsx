@@ -55,7 +55,7 @@ export default function HowItWorks() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="font-serif text-3xl text-brand-soft">
+              <div className="font-serif text-3xl text-brand-mid">
                 {step.num}
               </div>
               <h3 className="text-base font-medium text-ink mt-3 mb-1.5">

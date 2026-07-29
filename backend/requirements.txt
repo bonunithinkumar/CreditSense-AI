@@ -22,3 +22,5 @@ pandas
 shap
 python-multipart
 scikit-learn
+google-auth
+requests
