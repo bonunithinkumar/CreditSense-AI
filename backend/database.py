@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-db_url = os.environ.get("DATABASE_URL", "postgresql://bonukirankumar@localhost:5432/credit_scorer_db")
+db_url = os.environ.get("DATABASE_URL")
 engine = create_engine(db_url)
 
 session = sessionmaker(autocommit=False, autoflush=False, bind=engine)

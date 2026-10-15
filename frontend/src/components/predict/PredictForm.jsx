@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from 'react'
-import { User, CreditCard, Sparkles, Info } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { User, CreditCard, Sparkles, Info, LogIn, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import InputCard from './InputCard'
 import useAuthStore from '../../store/authStore'
 
@@ -109,17 +110,37 @@ export default function PredictForm({ onSubmit, loading }) {
                                    (Number(formData.late_60_89 || 0) * 2) + 
                                    (Number(formData.late_90 || 0) * 3)
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const [showSignInGate, setShowSignInGate] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [toastDismissed, setToastDismissed] = useState(false)
+  const toastTimerRef = useRef(null)
 
   const handleUseCalculatedValue = (field, value) => {
-    setFormData({ ...formData, [field]: value })
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handleChange = useCallback((e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    if (!user && !toastDismissed && !showToast) {
+      setShowToast(true)
+      toastTimerRef.current = setTimeout(() => setShowToast(false), 6000)
+    }
+  }, [user, toastDismissed, showToast])
+
+  useEffect(() => () => clearTimeout(toastTimerRef.current), [])
+
+  const dismissToast = () => {
+    setShowToast(false)
+    setToastDismissed(true)
+    clearTimeout(toastTimerRef.current)
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Convert to numbers before sending
+    if (!user) {
+      setShowSignInGate(true)
+      return
+    }
     const data = {}
     for (const key in formData) {
       if (!['late_30_59', 'late_60_89', 'late_90'].includes(key)) {
@@ -132,6 +153,67 @@ export default function PredictForm({ onSubmit, loading }) {
 
   return (
     <form className="flex-1" onSubmit={handleSubmit}>
+
+
+
+      {/* Floating toast — fires on first keystroke for guests */}
+      {showToast && (
+        <div
+          style={{ animation: 'slideInToast 0.35s cubic-bezier(0.16,1,0.3,1)' }}
+          className="fixed top-5 right-5 z-[100] w-[300px] bg-white border border-border rounded-2xl shadow-xl p-4 flex gap-3"
+        >
+          <style>{`@keyframes slideInToast{from{opacity:0;transform:translateY(-16px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}`}</style>
+          <div className="w-8 h-8 rounded-xl bg-brand-tint flex items-center justify-center shrink-0 mt-0.5">
+            <LogIn className="w-4 h-4 text-brand-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-ink leading-tight">Sign in to analyse</p>
+            <p className="text-[11px] text-muted mt-0.5 leading-relaxed">
+              Create a free account to run the risk analysis and save your history.
+            </p>
+            <Link
+              to="/auth"
+              className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-brand-primary hover:underline"
+            >
+              <LogIn className="w-3 h-3" /> Sign in / Sign up →
+            </Link>
+          </div>
+          <button type="button" onClick={dismissToast} className="text-muted hover:text-ink transition-colors shrink-0">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Sign-in gate — shown on submit when not signed in */}
+      {showSignInGate && (
+        <div className="mb-4 relative flex flex-col gap-3 p-4 bg-surface border-2 border-brand-primary/30 rounded-xl shadow-sm">
+          <button
+            type="button"
+            onClick={() => setShowSignInGate(false)}
+            className="absolute top-3 right-3 text-muted hover:text-ink transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full bg-brand-tint flex items-center justify-center">
+              <LogIn className="w-3.5 h-3.5 text-brand-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-ink">Almost there!</p>
+              <p className="text-[11px] text-muted">Sign in to run the analysis. Your form data is saved.</p>
+            </div>
+          </div>
+          <div className="flex gap-2 mt-1">
+            <Link
+              to="/auth"
+              className="flex-1 bg-brand text-brand-base text-sm font-medium py-2.5 rounded-xl flex items-center justify-center gap-1.5 hover:bg-brand/90 transition-colors"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              Sign in / Sign up
+            </Link>
+          </div>
+        </div>
+      )}
       <InputCard
         title="Personal & financial profile"
         subtitle="Basic borrower information"
@@ -218,7 +300,7 @@ export default function PredictForm({ onSubmit, loading }) {
         </div>
       </InputCard>
 
-      {!user && (
+      {!user && !showSignInGate && (
         <div className="mt-3 p-3 bg-[#EAE8E2] rounded-lg text-[11px] text-muted/80 text-center border border-border">
           Sign in to save your prediction history.
         </div>

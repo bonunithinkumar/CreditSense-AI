@@ -59,13 +59,16 @@ db_dependency = Annotated[Session, Depends(get_db)]
 # Sign up and create user
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(create_user_request: CreateUserRequest, db: db_dependency):
-    
-    create_user_model = Users(
-        username = create_user_request.username,
-        password = bcrypt_context.hash(create_user_request.password)
-    )
-    db.add(create_user_model)
-    db.commit()
+    try:
+        create_user_model = Users(
+            username = create_user_request.username,
+            password = bcrypt_context.hash(create_user_request.password)
+        )
+        db.add(create_user_model)
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="An account with this email already exists.")
 
 # Login and get token
 @router.post("/token", response_model=Token)

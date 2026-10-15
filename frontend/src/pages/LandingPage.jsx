@@ -18,11 +18,6 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false)
 
   const handleAnalyze = async (data) => {
-    if (!useAuthStore.getState().user) {
-      navigate('/auth')
-      return
-    }
-
     setLoading(true)
     try {
       const response = await client.post('/predict', data)
